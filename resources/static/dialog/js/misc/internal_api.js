@@ -12,6 +12,15 @@
       storage = bid.Storage,
       moduleManager = bid.module;
 
+  function curry(fToBind) {
+    var aArgs = [].slice.call(arguments, 1),
+        fBound = function () {
+          return fToBind.apply(null, aArgs.concat([].slice.call(arguments)));
+        };
+
+    return fBound;
+  }
+
   // given an object containing an assertion, extract the assertion string,
   // as the internal API is supposed to return a string assertion, not an
   // object.  issue #1395
@@ -138,7 +147,7 @@
    */
   internal.logout = function(origin, callback) {
     user.setOrigin(origin);
-    user.logout(callback, callback.curry(null));
+    user.logout(callback, curry(callback, null));
   };
 
   /**
@@ -147,7 +156,7 @@
    * @param {function} callback
    */
   internal.logoutEverywhere = function(callback) {
-    user.logoutUser(callback, callback.curry(null));
+    user.logoutUser(callback, curry(callback, null));
   };
 
   internal.watch = function (callback, options, log) {
